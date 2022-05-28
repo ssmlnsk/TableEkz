@@ -3,13 +3,13 @@ import sqlite3
 
 class DataBase:
     def __init__(self):     # create
-        name = "shop.db"
+        name = "products.db"
         self.db = sqlite3.connect(f"{name}")
         cur = self.db.cursor()
-        cur.execute("""CREATE TABLE IF NOT EXISTS Shop (
+        cur.execute("""CREATE TABLE IF NOT EXISTS Products (
             id integer primary key,
-            name TEXT,
-            address TEXT
+            product TEXT,
+            quanity integer
             )
         """)
         self.db.commit()
@@ -17,26 +17,26 @@ class DataBase:
 
     def read(self):    # read
         cur = self.db.cursor()
-        cur.execute("""SELECT * FROM Shop""")
+        cur.execute("""SELECT * FROM Products""")
         records = cur.fetchall()
         cur.close()
         return records
 
-    def update(self, id, name, address):   # update
+    def update(self, id, product, quanity):   # update
         id = int(id)
         cur = self.db.cursor()
-        cur.execute(f""" UPDATE Shop set name="{name}", address="{address}" WHERE id={id}""")
+        cur.execute(f""" UPDATE Products set product="{product}", quanity="{quanity}" WHERE id={id}""")
         self.db.commit()
         cur.close()
 
     def delete(self, id):     # delete
         cur = self.db.cursor()
-        cur.execute(f"""DELETE from Shop WHERE id={id}""")
+        cur.execute(f"""DELETE from Products WHERE id={id}""")
         self.db.commit()
         cur.close()
 
-    def insert(self, name, address):
+    def insert(self, product, quanity):
         cur = self.db.cursor()
-        cur.execute("INSERT INTO Shop VALUES (NULL, ?, ?)", (name, address))
+        cur.execute("INSERT INTO Products VALUES (NULL, ?, ?)", (product, quanity))
         self.db.commit()
         cur.close()

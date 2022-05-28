@@ -1,5 +1,5 @@
 from DataBase import DataBase
-from PyQt5 import uic
+from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QMessageBox
 import sys
@@ -9,39 +9,36 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = DataBase()
-        self.ui = uic.loadUi("forms/shop.ui", self)
-        self.window().setWindowTitle("Магазин")
-        self.ui.btn_add_name.clicked.connect(self.add_shop)
-        self.ui.btn_save_data.clicked.connect(self.save_shop_in_db)
-        self.ui.btn_delete.clicked.connect(self.On_Delete_Click)
-        self.table = self.ui.table_shop
-        self.cout_shop()
+        self.ui = uic.loadUi("forms/products.ui", self)
+        self.window().setWindowTitle("Список продуктов")
+        self.ui.btn_add.clicked.connect(self.add_product)
+        self.ui.btn_save.clicked.connect(self.save_products_in_db)
+        self.ui.btn_delete.clicked.connect(self.delete_product)
+        self.table = self.ui.table_products
+        self.cout_product()
 
-    def save_shop_in_db(self):  # сохраняем измененные ячейки в БД при нажатии на кнопку
+    def save_products_in_db(self):  # сохраняем измененные ячейки в БД при нажатии на кнопку
         data = self.get_from_table()
         for string in data:
             if string[1] != '':  # если названия магазина есть, то обновляем данные
                 self.db.update(string[0], string[1], string[2])
             else:  # если названия магазина нет, то удаляем эту строку
                 self.db.delete(string[0])
-        self.cout_shop()
+        self.cout_product()
 
-    def add_shop(self):  # добавляем новый магазин в БД и в таблицу
-        name = self.ui.name.text()
-        address = self.ui.address.text()
-        if name != '' and address != '':
-            self.db.insert(name, address)
-            self.cout_shop()
+    def add_product(self):
+        self.ui = InsertWidget(self)
+        self.ui.show()
 
-    def cout_shop(self):
+    def cout_product(self):
         self.table.clear()
         rec = self.db.read()
         self.table.setColumnCount(3)  # кол-во столбцов
         self.table.setRowCount(len(rec))  # кол-во строк
         self.table.setHorizontalHeaderLabels(['ID', 'Product', 'Quantity'])  # название колонок таблицы
 
-        for i, shop in enumerate(rec):
-            for x, field in enumerate(shop):  # i, x - координаты ячейки, в которую будем записывать текст
+        for i, product in enumerate(rec):
+            for x, field in enumerate(product):  # i, x - координаты ячейки, в которую будем записывать текст
                 item = QTableWidgetItem()
                 item.setText(str(field))  # записываем текст в ячейку
                 if x == 0:  # для id делаем некликабельные ячейки
@@ -59,10 +56,10 @@ class MainWindow(QMainWindow):
             data.append(tmp)
         return data
 
-    @pyqtSlot()
-    def On_Delete_Click(self):
+    def delete_product(self):
         SelectedRow = self.table.currentRow()
         rowcount = self.table.rowCount()
+        colcount = self.table.columnCount()
 
         if rowcount == 0:
             msg = QMessageBox(self)
@@ -81,9 +78,25 @@ class MainWindow(QMainWindow):
             retval = msg.exec_()
 
         else:
-            self.table.removeRow(SelectedRow)
-            ix = self.table.model().index(SelectedRow, self.table.currentColumn())
+            for col in range(1, colcount):
+                self.table.setItem(SelectedRow, col, QTableWidgetItem(''))
+            ix = self.table.model().index(-1, -1)
             self.table.setCurrentIndex(ix)
+
+
+class InsertWidget(QtWidgets.QWidget):
+    def __init__(self, link=None):
+        self.link = link
+        super(InsertWidget, self).__init__()
+        self.ui = uic.loadUi('forms/insert.ui', self)
+        self.add_btn.clicked.connect(self.add)
+
+    def add(self):
+        product = self.ui.product.text()
+        quanity = self.ui.quanity.text()
+        if product != '' and quanity != '':
+            self.link.db.insert(product, quanity)
+            self.link.cout_product()
 
 
 if __name__ == '__main__':

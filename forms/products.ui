@@ -30,70 +30,42 @@
        <number>8</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Введите название магазина:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="name"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Введите адрес магазина:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="address"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btn_add_name">
+       <widget class="QPushButton" name="btn_add">
         <property name="text">
-         <string>Добавить магазин</string>
+         <string>Добавить продукт</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QTableWidget" name="table_shop">
+       <widget class="QTableWidget" name="table_products">
         <column>
          <property name="text">
-          <string>id</string>
+          <string>ID</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>shop</string>
+          <string>Product</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>address</string>
+          <string>Quanity</string>
          </property>
         </column>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_save_data">
+       <widget class="QPushButton" name="btn_save">
         <property name="text">
-         <string>Сохранить изменения в базу данных</string>
+         <string>Сохранить</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btn_delete">
         <property name="text">
-         <string>PushButton</string>
+         <string>Удалить</string>
         </property>
        </widget>
       </item>
